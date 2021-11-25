@@ -1,0 +1,104 @@
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800;900&display=swap);
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d7d74b;
+}
+
+#calculator {
+    width: 60%;
+    background-color: #f7f7f7;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+#calculator_display {
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #fdd7d7;
+    border-radius: 9px;
+    text-align: right;
+}
+
+#calculator_display #result {
+    font-size: 18px;
+    font-weight: bold;
+    height: 25px;
+}
+
+#calculator_display #history {
+    font-size: 18px;
+    font-weight: 500;
+    color: #00000070;
+    height: 25px;
+}
+
+#calculator_keys {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#calculator_keys div:nth-child(1),
+#calculator_keys div:nth-child(2),
+#calculator_keys div:nth-child(3),
+#calculator_keys div:nth-child(4),
+#calculator_keys div:nth-child(5) {
+    display: flex;
+    gap: 5px;
+}
+#calculator_keys div:nth-child(1) button,
+#calculator_keys div:nth-child(2) button,
+#calculator_keys div:nth-child(3) button,
+#calculator_keys div:nth-child(4) button,
+#calculator_keys div:nth-child(5) button {
+    padding: .7rem 0;
+    border: 1px solid #15151557;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 15px;
+}
+
+#calculator_keys div:nth-child(1) button:hover,
+#calculator_keys div:nth-child(2) button:hover,
+#calculator_keys div:nth-child(3) button:hover,
+#calculator_keys div:nth-child(4) button:hover,
+#calculator_keys div:nth-child(5) button:hover {
+    opacity: .6;
+    cursor: pointer;
+}
+
+#calculator_keys div:nth-child(1) .clear,
+#calculator_keys div:nth-child(5) .equal {
+    background-color: lightcoral;
+    color: #f7f7f7;
+    flex: 2;
+    font-weight: bold;
+}
+#calculator_keys div:nth-child(1) .delete,
+#calculator_keys div:nth-child(1) .operator {
+    flex: 1;
+}
+
+#calculator_keys div:nth-child(2) button,
+#calculator_keys div:nth-child(3) button,
+#calculator_keys div:nth-child(4) button {
+    flex: 1;
+}
+
+#calculator_keys div:nth-child(5) .number,
+#calculator_keys div:nth-child(5) .decimal {
+    flex: 1;
+}

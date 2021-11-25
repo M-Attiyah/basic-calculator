@@ -1,102 +1,107 @@
-// declare display section
-const display = document.querySelector("#calculator_display #result");
+/* -------------- variables declarations ---------------- */
+// result section
+const result = document.querySelector("#calculator_display #result");
 const history = document.querySelector("#calculator_display #history");
 
-// declare keys section
-const keys = document.querySelectorAll("#calculator_keys button");
-// declare operation variables
-let oldNum, currNum, operator;
+// buttons
+const buttons = document.querySelectorAll("#calculator_keys button");
 
-keys.forEach((key) => {
-    // access all keys by class name
-    key.addEventListener("click", (e) => {
-        /**
-         * declare
-         * action (to target button)
-         * actionText (to get text of target button)
-         */
-        let action = e.target;
-        let action_text = e.target.textContent;
+// evaluate variables
+let currNum, oldNum, operation;
 
-        /**
-         * check the name of class
-         */
-
-        // numbers
-        if (action.className === "number") {
-            if (
-                display.textContent === '0' || 
-                display.textContent.slice(0, 1) === '+' ||
-                display.textContent.slice(0, 1) === '-' ||
-                display.textContent.slice(0, 1) === '*' ||
-                display.textContent.slice(0, 1) === '/'
-                ) {
-                display.textContent = action_text;
-            } else {
-                display.textContent += action_text;
-            }
-            
-            history.textContent += action_text;
-            currNum = display.textContent;
-            console.log(currNum, "curr");
-        }
-
-        // operators
-        if (action.className === "operator") {
-            display.textContent = action_text;
-            history.textContent = history.textContent + action_text;
-            oldNum = currNum;
-            operator = action_text;
-        }
-
-        // decimal
-        if (action.className === "decimal") {
-            if (display.textContent === '0') {
-                display.textContent = '0.';
-            } else {
-                display.textContent += action_text;
-            }
-        }
-
-        // delete
-        if (action.className === "delete") {
-            display.textContent = display.textContent.slice(0, display.textContent.length - 1);
-            
-            if (display.textContent.length < 1) {
-                display.textContent = 0;
-            }
-        }
-
-        // clear
-        if (action.className === "clear") {
-            display.textContent = '0';
-            history.textContent = '';
-        }
-
-        // equal
-        if (action.className === "equal") {
-            display.textContent = eval(oldNum, operator, currNum);
-            currNum = display.textContent;
-        }
-    });
+// events
+buttons.forEach((btn) => {
+    btn.addEventListener("click", clickKey);
 });
 
+// functions
+function clickKey(e) {
+    // target the button
+    let action = e.target;
+    // store the button value
+    let actionText = action.textContent;
 
-function eval(n1, o, n2) {
-    let result = '';
+    // if user input greater than 8 numbers
+    if (result.textContent.length > 8) return;
 
-    if (o === '+') {
-        result = Number(n1) + Number(n2);
-    } else if (o === '-') {
-        result = Number(n1) - Number(n2);
-    } else if (o === '*') {
-        result = Number(n1) * Number(n2);
-    } else if (o === '/') {
-        result = Number(n1) / Number(n2);
-    } else {
-        result = '0';
+    // access numbers buttons
+    if (action.className === "number") {
+        /**
+         * check the number buttons
+         * - if result section empty
+         * - then: add one number
+         * - otherwise: add new number to old
+         */
+        if (result.textContent === '') {
+            result.textContent = actionText;
+        } else {
+            result.textContent += actionText;
+        }
+
+        // store the result section to current Number
+        currNum = result.textContent;
+        console.log(currNum, 'curr');
+    }
+
+    // access operators buttons 
+    if (action.className === 'operator') {
+        if (result.textContent !== '') {
+            result.textContent = actionText; 
+            oldNum = currNum;
+            operation = actionText;
+            history.textContent = actionText;
+
+            console.log(operation, 'operation');
+            console.log(oldNum, 'old');  
+        } 
+        result.textContent = '';
     }
     
-    return result;
+    // access the dot 
+    if (action.className === 'decimal') {
+        if (result.textContent === '') {
+            result.textContent = '0' + actionText;
+        } else {
+            result.textContent += actionText;
+        }        
+    }
+
+    // access clear button 
+    if (action.className === 'clear') {
+        result.textContent = '';
+        history.textContent = '';
+        operation = '';
+        currNum = 0;
+    }
+
+    // access delete button
+    if (action.className === 'delete') {
+        let textLength = result.textContent.length;
+        result.textContent = result.textContent.slice(0, textLength - 1);
+    }
+
+    // access equal button 
+    if (action.className === 'equal') {
+        if (result.textContent === '') {
+            return;
+        } else {
+            result.textContent = eval(oldNum, operation, currNum);
+        }
+    }
 }
 
+function eval(old, operation, current) {
+    let result = '';
+        if (operation === '+') {
+            result = parseFloat(old) + parseFloat(current);
+        } else if (operation === '-') {
+            result = parseFloat(old) - parseFloat(current);
+        } else if (operation === '*') {
+            result = parseFloat(old) * parseFloat(current);
+        } else if (operation === '/') {
+            result = parseFloat(old) / parseFloat(current);
+        } else {
+            result = '';
+        }
+    return result;    
+}

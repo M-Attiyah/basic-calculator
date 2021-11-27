@@ -86,6 +86,7 @@ function clickKey(e) {
             return;
         } else {
             result.textContent = eval(oldNum, operation, currNum);
+            currNum = result.textContent;
         }
     }
 }

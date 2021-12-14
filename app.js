@@ -1,108 +1,115 @@
-/* -------------- variables declarations ---------------- */
-// result section
-const result = document.querySelector("#calculator_display #result");
+/**
+ * create basic calculator can add or subtract or multiply or divide two numbers
+ * TODO: keep code cleaner and easy to read
+ */
+
+// define the elements to access the buttons
+const buttons = document.querySelectorAll("#calculator_keys div button");
+
+// define the history element to show all actions
 const history = document.querySelector("#calculator_display #history");
 
-// buttons
-const buttons = document.querySelectorAll("#calculator_keys button");
+// define the display element to show the numbers and operators and calc them
+const display = document.querySelector("#calculator_display #display");
 
-// evaluate variables
-let currNum, oldNum, operation;
+const h3 = document.querySelector("h3");
 
-// events
+// define the operator / ( old / current numbers )
+let operator, currentNumber, oldNumber;
+
+// check elements
+// console.log(buttons, history, display); ✅
+
+/**
+ * we need to access all keys to get value of any key will user click on it
+ * - to do that we need to loop through buttons elements to access all of them
+ *  - user foreach to loop with @param (btn)
+ *  @return (btn) to use it for get value from button
+ *  - we need to group the operators buttons
+ *  - we need to group the numbers buttons
+ *  - we need to group the equals and del and clear and decimal
+ */
+
 buttons.forEach((btn) => {
-    btn.addEventListener("click", clickKey);
+    // when user click the button will get the value from button
+    btn.addEventListener("click", (e) => {
+        // declare variable to store the user action
+        let action = e.target;
+        let action_text = action.textContent;
+
+        // group the numbers
+        if (action.className === "number") {
+            display.textContent += action_text
+            currentNumber = display.textContent;
+        }
+
+        if (action.className === "operator") {
+            if (display.textContent !== '') {
+                history.textContent = action_text
+            }
+            oldNumber = currentNumber;
+            operator = action_text;
+            display.textContent = "";
+            return false
+        }
+
+        if (action.className === "decimal") {
+            if (display.textContent !== "") {
+                display.textContent += action_text;
+            }
+            return false;
+        }
+
+        // when click equal will take the old number and operator and current number to put it in calculate function to get result
+        if (action.className === "equal") {
+            if (display.textContent !== "") {
+                display.textContent = calculate(
+                    oldNumber,
+                    operator,
+                    currentNumber
+                );
+                currentNumber = display.textContent;
+            }
+            return false;
+        }
+
+        // when click clear button will reset everything
+        if (action.className === "clear") {
+            display.textContent = "";
+            history.textContent = "";
+            oldNumber = "";
+            currentNumber = "";
+            operator = "";
+        }
+
+        // when click delete button will delete numbers one by one
+        if (action.className === "delete") {
+            display.textContent = display.textContent.slice(
+                0,
+                display.textContent.length - 1
+            );
+        }
+    });
 });
 
-// functions
-function clickKey(e) {
-    // target the button
-    let action = e.target;
-    // store the button value
-    let actionText = action.textContent;
+function calculate(number1, operator, number2) {
+    let result = "";
 
-    // if user input greater than 8 numbers
-    if (result.textContent.length > 8) return;
-
-    // access numbers buttons
-    if (action.className === "number") {
-        /**
-         * check the number buttons
-         * - if result section empty
-         * - then: add one number
-         * - otherwise: add new number to old
-         */
-        if (result.textContent === '') {
-            result.textContent = actionText;
-        } else {
-            result.textContent += actionText;
-        }
-
-        // store the result section to current Number
-        currNum = result.textContent;
-        console.log(currNum, 'curr');
+    if (operator === "+") {
+        result = Number(number1) + Number(number2);
+    } else if (operator === "-") {
+        result = Number(number1) - Number(number2);
+    } else if (operator === "*") {
+        result = Number(number1) * Number(number2);
+    } else if (operator === "/") {
+        result = Number(number1) / Number(number2);
+    } else {
+        result = "error";
+        setTimeout(function () {
+            display.textContent = "";
+        }, 1100);
     }
 
-    // access operators buttons 
-    if (action.className === 'operator') {
-        if (result.textContent !== '') {
-            result.textContent = actionText; 
-            oldNum = currNum;
-            operation = actionText;
-            history.textContent = actionText;
-
-            console.log(operation, 'operation');
-            console.log(oldNum, 'old');  
-        } 
-        result.textContent = '';
-    }
-    
-    // access the dot 
-    if (action.className === 'decimal') {
-        if (result.textContent === '') {
-            result.textContent = '0' + actionText;
-        } else {
-            result.textContent += actionText;
-        }        
-    }
-
-    // access clear button 
-    if (action.className === 'clear') {
-        result.textContent = '';
-        history.textContent = '';
-        operation = '';
-        currNum = 0;
-    }
-
-    // access delete button
-    if (action.className === 'delete') {
-        let textLength = result.textContent.length;
-        result.textContent = result.textContent.slice(0, textLength - 1);
-    }
-
-    // access equal button 
-    if (action.className === 'equal') {
-        if (result.textContent === '') {
-            return;
-        } else {
-            result.textContent = eval(oldNum, operation, currNum);
-            currNum = result.textContent;
-        }
-    }
+    return result;
 }
 
-function eval(old, operation, current) {
-    let result = '';
-        if (operation === '+') {
-            result = parseFloat(old) + parseFloat(current);
-        } else if (operation === '-') {
-            result = parseFloat(old) - parseFloat(current);
-        } else if (operation === '*') {
-            result = parseFloat(old) * parseFloat(current);
-        } else if (operation === '/') {
-            result = parseFloat(old) / parseFloat(current);
-        } else {
-            result = '';
-        }
-    return result;    
-}
